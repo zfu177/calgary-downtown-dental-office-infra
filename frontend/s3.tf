@@ -1,9 +1,10 @@
 resource "aws_s3_bucket" "website" {
   bucket = var.bucket_name
   tags = {
-    Name        = var.bucket_name
-    Environment = var.environment
-    Terraform   = true
+    Name          = var.bucket_name
+    Environment   = var.environment
+    Administrator = var.administrator
+    Terraform     = true
   }
 }
 
@@ -16,21 +17,21 @@ resource "aws_s3_bucket_public_access_block" "allow_all" {
   restrict_public_buckets = false
 }
 
-data "aws_iam_policy_document" "s3_policy" {
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.website.arn}/*"]
-
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-  }
-}
-
 resource "aws_s3_bucket_policy" "website" {
   bucket = aws_s3_bucket.website.id
-  policy = data.aws_iam_policy_document.s3_policy.json
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": ["${aws_s3_bucket.website.arn}/*"]
+        }
+    ]
+}
+EOF
 }
 
 resource "aws_s3_bucket_cors_configuration" "website" {

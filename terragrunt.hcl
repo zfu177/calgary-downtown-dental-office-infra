@@ -2,6 +2,7 @@ locals {
   aws_region          = "us-east-1"
   env                 = "production"
   backend_bucket_name = "clcm3102-group-1-terraform-state"
+  administrator       = "z.fu177@mybvc.ca"
 }
 
 terraform {
@@ -35,5 +36,10 @@ remote_state {
     key     = "${local.env}/${path_relative_to_include()}/terraform.tfstate"
     region  = "${local.aws_region}"
     encrypt = true
+    s3_bucket_tags = {
+      "Administrator" = "${local.administrator}"
+      "Environment"   = "${local.env}"
+      "Terraform"     = "true"
+    }
   }
 }

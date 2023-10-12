@@ -9,3 +9,11 @@ variable "environment" {
 variable "administrator" {
   type = string
 }
+
+variable "service_name" {
+  type = string
+}
+
+variable "public_key" {
+  type = string
+}

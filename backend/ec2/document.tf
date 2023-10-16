@@ -16,10 +16,5 @@ resource "aws_ssm_document" "update_code" {
 }
 DOC
 
-  tags = {
-    "Administrator" = var.administrator
-    "Environment"   = var.environment
-    "Service"       = var.service_name
-    "Terraform"     = true
-  }
+  tags = var.additional_tags
 }

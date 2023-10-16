@@ -12,22 +12,18 @@ data "aws_subnets" "default" {
 }
 
 resource "aws_db_subnet_group" "default" {
-  name       = var.identifier
+  name       = var.service_name
   subnet_ids = try(var.private_subnet_ids, data.aws_subnets.default.ids)
 
-  tags = {
-    Name          = "${var.identifier}-subnet-group"
-    Service       = "${var.service_name}"
-    Environment   = var.environment
-    Administrator = var.administrator
-    Terraform     = true
-  }
+  tags = merge(var.additional_tags, {
+    Name = "${var.service_name}-subnet-group"
+  })
 }
 
-module "db_default" {
+module "rds_mysql" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = "${var.identifier}-default"
+  identifier = "${var.service_name}-default"
 
   create_db_option_group    = false
   create_db_parameter_group = false
@@ -53,10 +49,5 @@ module "db_default" {
 
   backup_retention_period = 1
 
-  tags = {
-    Service       = "${var.service_name}"
-    Environment   = var.environment
-    Administrator = var.administrator
-    Terraform     = true
-  }
+  tags = var.additional_tags
 }

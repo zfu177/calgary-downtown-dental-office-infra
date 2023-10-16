@@ -19,9 +19,7 @@ resource "aws_security_group" "rds" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  tags = {
-    Name          = "rds-default-sg"
-    Administrator = var.administrator
-    Terraform     = true
-  }
+  tags = merge(var.additional_tags, {
+    Name = "rds-default-sg"
+  })
 }

@@ -1,15 +1,6 @@
-variable "administrator" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-
 variable "service_name" {
   type    = string
-  default = "dental_office"
+  default = "dental-office"
 }
 
 variable "public_key" {
@@ -37,5 +28,11 @@ variable "iam_instance_profile" {
 
 variable "document_name" {
   type    = string
-  default = "update_code"
+  default = "update-code"
+}
+
+variable "additional_tags" {
+  default     = {}
+  description = "Additional resource tags"
+  type        = map(string)
 }

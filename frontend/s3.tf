@@ -1,11 +1,8 @@
 resource "aws_s3_bucket" "website" {
   bucket = var.bucket_name
-  tags = {
-    Name          = var.bucket_name
-    Environment   = var.environment
-    Administrator = var.administrator
-    Terraform     = true
-  }
+  tags = merge(var.additional_tags, {
+    Name = var.bucket_name
+  })
 }
 
 resource "aws_s3_bucket_public_access_block" "allow_all" {

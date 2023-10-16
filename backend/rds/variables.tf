@@ -1,17 +1,4 @@
-variable "administrator" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
 variable "service_name" {
-  type    = string
-  default = "dental_office"
-}
-
-variable "identifier" {
   type    = string
   default = "dental-office"
 }
@@ -31,11 +18,13 @@ variable "allocated_storage" {
 }
 
 variable "source_security_group_id" {
-  type = string
+  description = "The security group id which allows to access RDS"
+  type        = string
 }
 
 variable "vpc_id" {
-  type = string
+  type    = string
+  default = "vpc-0cfc992e72fac8cde"
 }
 
 variable "db_subnet_group_name" {
@@ -50,4 +39,10 @@ variable "db_name" {
 variable "username" {
   type    = string
   default = "dev1"
+}
+
+variable "additional_tags" {
+  default     = {}
+  description = "Additional resource tags"
+  type        = map(string)
 }

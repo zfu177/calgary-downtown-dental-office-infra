@@ -1,10 +1,16 @@
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
 
 variable "vpc_name" {
-  type = string
+  type    = string
+  default = "dental-office"
 }
 
 variable "vpc_cidr" {
-  type = string
+  type    = string
+  default = "10.0.0.0/16"
 }
 
 variable "additional_tags" {

@@ -2,10 +2,8 @@ variable "bucket_name" {
   type = string
 }
 
-variable "environment" {
-  type = string
-}
-
-variable "administrator" {
-  type = string
+variable "additional_tags" {
+  default     = {}
+  description = "Additional resource tags"
+  type        = map(string)
 }

@@ -10,8 +10,23 @@
 
 ## Terragrunt Commands
 
+## 2. Deploy frontend
 ```bash
-terragrunt init
-terragrunt run-all plan
-terragrunt run-all apply
+cd frontend
+terragrunt plan
+terragrunt apply
+```
+
+## 2. Deploy rds
+```bash
+cd backend/rds
+terragrunt plan
+terragrunt apply
+```
+
+## 3. Deploy ec2 (Depends on rds)
+```bash
+cd backend/ec2
+terragrunt plan
+terragrunt apply
 ```

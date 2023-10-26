@@ -10,7 +10,8 @@ terraform {
     commands = ["plan", "apply", "destroy", "import"]
 
     arguments = [
-      "-var-file=${get_repo_root()}/global.tfvars"
+      "-var-file=${get_repo_root()}/global.tfvars",
+      "-compact-warnings"
     ]
   }
 }

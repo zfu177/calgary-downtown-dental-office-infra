@@ -10,7 +10,7 @@ resource "aws_ssm_document" "update_code" {
     "action" : "aws:runShellScript",
     "name" : "update",
     "inputs" : {
-      "runCommand" : [ "cd /root/dental_office", "git pull" ]
+      "runCommand" : [ "runuser -l ec2-user -c 'cd ~/dental_office && git pull'" ]
     }
   } ]
 }

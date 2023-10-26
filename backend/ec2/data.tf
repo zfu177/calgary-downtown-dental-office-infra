@@ -22,14 +22,8 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
-# Get my current public IP
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-}
-
-
 # Get subnet Ids
-data "aws_subnets" "default" {
+data "aws_subnets" "public" {
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]

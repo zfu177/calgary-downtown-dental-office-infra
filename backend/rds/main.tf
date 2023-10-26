@@ -1,5 +1,17 @@
-# Get private subnet Ids
-data "aws_subnets" "default" {
+locals {
+  db_credential = {
+    username             = var.db_username
+    password             = var.db_password
+    host                 = module.rds_mysql.db_instance_address
+    port                 = 3306
+    dbname               = var.db_name
+    dbInstanceIdentifier = var.service_name
+
+  }
+}
+
+# Get private subnets
+data "aws_subnets" "private_subnet" {
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]
@@ -12,18 +24,27 @@ data "aws_subnets" "default" {
 }
 
 resource "aws_db_subnet_group" "default" {
-  name       = var.service_name
-  subnet_ids = try(var.private_subnet_ids, data.aws_subnets.default.ids)
+  name       = "${var.service_name}-subnet-group"
+  subnet_ids = data.aws_subnets.private_subnet.ids
 
   tags = merge(var.additional_tags, {
     Name = "${var.service_name}-subnet-group"
   })
 }
 
+resource "aws_ssm_parameter" "db_credential" {
+  name        = "/${var.service_name}/${var.environment}/database/credential"
+  description = "The database credential of ${var.service_name}"
+  type        = "SecureString"
+  value       = jsonencode(local.db_credential)
+
+  tags = var.additional_tags
+}
+
 module "rds_mysql" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = "${var.service_name}-default"
+  identifier = var.service_name
 
   create_db_option_group    = false
   create_db_parameter_group = false
@@ -37,17 +58,23 @@ module "rds_mysql" {
 
   allocated_storage = var.allocated_storage
 
+  manage_master_user_password = false
+
   db_name  = var.db_name
-  username = var.username
+  username = var.db_username
+  password = var.db_password
   port     = 3306
 
-  db_subnet_group_name   = try(var.db_subnet_group_name, aws_db_subnet_group.default.name)
+  db_subnet_group_name   = aws_db_subnet_group.default.name
   vpc_security_group_ids = [aws_security_group.rds.id]
 
   maintenance_window = "Sat:00:00-Sat:03:00"
   backup_window      = "03:00-06:00"
 
   backup_retention_period = 1
+  storage_encrypted       = false
 
-  tags = var.additional_tags
+
+  skip_final_snapshot = true
+  tags                = var.additional_tags
 }

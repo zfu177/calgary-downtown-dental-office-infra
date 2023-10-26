@@ -3,9 +3,10 @@ variable "service_name" {
   default = "dental-office"
 }
 
-variable "private_subnet_ids" {
-  type = list(string)
+variable "environment" {
+  type = string
 }
+
 
 variable "instance_class" {
   type    = string
@@ -17,28 +18,23 @@ variable "allocated_storage" {
   default = 20
 }
 
-variable "source_security_group_id" {
-  description = "The security group id which allows to access RDS"
-  type        = string
-}
-
 variable "vpc_id" {
-  type    = string
-  default = "vpc-0cfc992e72fac8cde"
-}
-
-variable "db_subnet_group_name" {
   type = string
 }
+
 
 variable "db_name" {
   type    = string
   default = "dental_office_development"
 }
 
-variable "username" {
-  type    = string
-  default = "dev1"
+variable "db_username" {
+  type = string
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
 }
 
 variable "additional_tags" {

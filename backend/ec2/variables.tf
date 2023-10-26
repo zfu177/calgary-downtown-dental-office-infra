@@ -8,22 +8,12 @@ variable "public_key" {
 }
 
 variable "vpc_id" {
-  type    = string
-  default = "vpc-0cfc992e72fac8cde"
-}
-
-variable "subnet_id" {
   type = string
 }
 
 variable "instance_type" {
   type    = string
   default = "t2.micro"
-}
-
-variable "iam_instance_profile" {
-  type    = string
-  default = "LabInstanceProfile"
 }
 
 variable "document_name" {
@@ -35,4 +25,17 @@ variable "additional_tags" {
   default     = {}
   description = "Additional resource tags"
   type        = map(string)
+}
+
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
+
+variable "security_group_id" {
+  type = string
+}
+
+variable "db_credential_ssm_parameter_arn" {
+  type = string
 }

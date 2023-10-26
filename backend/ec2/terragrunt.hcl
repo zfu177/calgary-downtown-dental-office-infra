@@ -2,11 +2,11 @@ include "root" {
   path = find_in_parent_folders()
 }
 
-dependency "vpc" {
-  config_path = "../vpc"
+dependency "rds" {
+  config_path = "../rds"
 }
 
 inputs = {
-  vpc_id = dependency.vpc.outputs.vpc_id
-  subnet_id = dependency.vpc.outputs.private_subnet_ids[0]
+  security_group_id = dependency.rds.outputs.ec2_security_group_id
+  db_credential_ssm_parameter_arn = dependency.rds.outputs.db_credential_ssm_parameter_arn
 }

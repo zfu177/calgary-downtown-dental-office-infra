@@ -8,9 +8,12 @@
 * Terraform v1.5.7
 * terragrunt version 0.52.1
 
+## Before deployment
+Update values in each terragrunt.hcl
+
 ## Terragrunt Commands
 
-## 2. Deploy frontend
+## 1. Deploy frontend
 ```bash
 cd frontend
 terragrunt plan

@@ -1,23 +1,10 @@
-# Get private subnets
-data "aws_subnets" "private_subnet" {
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-
-  filter {
-    name   = "map-public-ip-on-launch"
-    values = ["false"]
-  }
-}
-
 resource "aws_db_subnet_group" "default" {
   count      = var.db_subnet_group_name == "" ? 1 : 0
-  name       = "${var.service_name}-subnet-group"
+  name       = "${var.service_name}-${var.environment}-subnet-group"
   subnet_ids = data.aws_subnets.private_subnet.ids
 
   tags = merge(var.additional_tags, {
-    Name = "${var.service_name}-subnet-group"
+    Name = "${var.service_name}-${var.environment}-subnet-group"
   })
 }
 
@@ -38,7 +25,7 @@ resource "aws_ssm_parameter" "db_url" {
 module "rds_mysql" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = var.service_name
+  identifier = "${var.service_name}-${var.environment}"
 
   create_db_option_group    = false
   create_db_parameter_group = false

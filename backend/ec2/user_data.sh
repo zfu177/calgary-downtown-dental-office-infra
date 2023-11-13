@@ -26,7 +26,7 @@ echo '{
         "collect_list": [
           {
             "file_path": "/var/lib/docker/containers/**.log",
-            "log_group_name": "/clcm3102-group1-dental-office/backend/server-logs",
+            "log_group_name": "/clcm3102-group1-dental-office/production/server-logs",
             "timezone": "UTC"
           }
         ]

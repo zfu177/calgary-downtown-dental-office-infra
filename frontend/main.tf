@@ -1,11 +1,9 @@
 resource "aws_s3_bucket" "website" {
-  bucket = var.bucket_name
-  tags = merge(var.additional_tags, {
-    Name = var.bucket_name
-  })
+  bucket = "${var.service_name}-${var.environment}-frontend"
+  tags   = var.additional_tags
 }
 
-resource "aws_s3_bucket_public_access_block" "allow_all" {
+resource "aws_s3_bucket_public_access_block" "public" {
   bucket = aws_s3_bucket.website.id
 
   block_public_acls       = false

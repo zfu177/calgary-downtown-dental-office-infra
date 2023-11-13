@@ -1,10 +1,15 @@
 # Create Key Pair
 resource "aws_key_pair" "admin" {
-  key_name   = "admin-key"
+  key_name   = var.key_name
   public_key = var.public_key
   tags       = var.additional_tags
 }
 
+resource "aws_cloudwatch_log_group" "server_log" {
+  name              = "/${var.service_name}/${var.environment}/server-logs"
+  retention_in_days = 7
+  tags              = var.additional_tags
+}
 
 resource "aws_launch_template" "web" {
   name = var.service_name

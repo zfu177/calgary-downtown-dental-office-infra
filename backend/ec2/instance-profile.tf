@@ -1,6 +1,7 @@
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "${var.service_name}-instance-profile"
-  role = aws_iam_role.role.name
+  count = var.instance_profile_name == "" ? 1 : 0
+  name  = "${var.service_name}-instance-profile"
+  role  = aws_iam_role.role[*].name
 }
 
 data "aws_iam_policy_document" "assume_role" {
@@ -17,8 +18,9 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role_policy" "ec2" {
+  count  = var.instance_profile_name == "" ? 1 : 0
   name   = "${var.service_name}-ec2-custom-policy"
-  role   = aws_iam_role.role.id
+  role   = aws_iam_role.role[*].id
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -30,7 +32,7 @@ resource "aws_iam_role_policy" "ec2" {
         "ssm:GetParametersByPath"
       ],
       "Effect": "Allow",
-      "Resource": "${var.db_credential_ssm_parameter_arn}"
+      "Resource": "${var.db_url_ssm_parameter_arn}"
     }
   ]
 }
@@ -38,6 +40,7 @@ EOF
 }
 
 resource "aws_iam_role" "role" {
+  count               = var.instance_profile_name == "" ? 1 : 0
   name                = "${var.service_name}-role"
   path                = "/"
   assume_role_policy  = data.aws_iam_policy_document.assume_role.json

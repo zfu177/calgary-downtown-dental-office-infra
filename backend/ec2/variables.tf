@@ -36,6 +36,11 @@ variable "security_group_id" {
   type = string
 }
 
-variable "db_credential_ssm_parameter_arn" {
+variable "db_url_ssm_parameter_arn" {
   type = string
+}
+
+variable "instance_profile_name" {
+  type    = string
+  default = "LabInstanceProfile"
 }

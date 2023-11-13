@@ -10,7 +10,7 @@ variable "environment" {
 
 variable "instance_class" {
   type    = string
-  default = "db.t2.micro"
+  default = "db.t3.micro"
 }
 
 variable "allocated_storage" {
@@ -32,13 +32,12 @@ variable "db_username" {
   type = string
 }
 
-variable "db_password" {
-  type      = string
-  sensitive = true
-}
-
 variable "additional_tags" {
   default     = {}
   description = "Additional resource tags"
   type        = map(string)
+}
+
+variable "db_subnet_group_name" {
+  type = string
 }

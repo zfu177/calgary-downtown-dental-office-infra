@@ -2,12 +2,12 @@ output "db_instance_address" {
   value = module.rds_mysql.db_instance_address
 }
 
-output "db_credential_ssm_parameter_arn" {
-  value = aws_ssm_parameter.db_credential.arn
+output "db_url_ssm_parameter_arn" {
+  value = aws_ssm_parameter.db_url.arn
 }
 
-output "db_credential_ssm_parameter_name" {
-  value = aws_ssm_parameter.db_credential.name
+output "db_url_ssm_parameter_name" {
+  value = aws_ssm_parameter.db_url.name
 }
 
 output "db_instance_cloudwatch_log_groups" {

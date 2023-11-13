@@ -9,5 +9,6 @@ additional_tags = {
   Service       = "clcm3102-group1-dental-office"
 }
 
-vpc_id      = "vpc-551dcc28"
-db_username = "dev1"
+vpc_id               = "vpc-0cfc992e72fac8cde"
+db_username          = "postgres"
+db_subnet_group_name = "default-vpc-0cfc992e72fac8cde"

@@ -34,3 +34,11 @@ data "aws_subnets" "public" {
     values = ["true"]
   }
 }
+
+
+data "aws_availability_zones" "us" {
+  filter {
+    name   = "region-name"
+    values = [var.region]
+  }
+}

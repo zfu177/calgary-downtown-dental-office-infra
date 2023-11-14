@@ -1,10 +1,5 @@
-# Get my current public IP
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-}
-
 resource "aws_security_group" "rds" {
-  name        = "rds-default-sg"
+  name        = "${var.service_name}-${var.environment}-rds-sg"
   description = "Allow inbound traffic from ec2"
   vpc_id      = var.vpc_id
 
@@ -17,7 +12,7 @@ resource "aws_security_group" "rds" {
   }
 
   tags = merge(var.additional_tags, {
-    Name = "rds-default-sg"
+    Name = "${var.service_name}-${var.environment}-rds-sg"
   })
 }
 
@@ -53,7 +48,7 @@ resource "aws_security_group" "ec2" {
   }
 
   ingress {
-    description = "HTTPs from anywhere"
+    description = "HTTPS from anywhere"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -69,6 +64,6 @@ resource "aws_security_group" "ec2" {
   }
 
   tags = merge(var.additional_tags, {
-    Name = "${var.service_name}-ec2-sg"
+    Name = "${var.service_name}-${var.environment}-ec2-sg"
   })
 }

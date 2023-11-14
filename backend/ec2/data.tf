@@ -22,23 +22,11 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
-# Get subnet Ids
-data "aws_subnets" "public" {
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-
-  filter {
-    name   = "map-public-ip-on-launch"
-    values = ["true"]
-  }
-}
-
+data "aws_region" "current" {}
 
 data "aws_availability_zones" "us" {
   filter {
     name   = "region-name"
-    values = [var.region]
+    values = [data.aws_region.current.name]
   }
 }

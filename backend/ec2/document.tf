@@ -16,7 +16,7 @@ resource "aws_ssm_document" "update_code" {
         "runuser -l ec2-user -c 'sed -i 's/RUBY_VERSION=.*/RUBY_VERSION=3.0.6/g' Dockerfile'",
         "runuser -l ec2-user -c 'sed -i 's/config.force_ssl =.*/config.force_ssl = false/g' ./config/environments/production.rb'",
         "runuser -l ec2-user -c 'docker compose build'",
-        "systemctl restart docker-compose-app"
+        "systemctl restart dentaloffice"
         ]
     }
   } ]

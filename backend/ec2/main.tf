@@ -6,9 +6,32 @@ resource "aws_key_pair" "admin" {
 }
 
 resource "aws_cloudwatch_log_group" "server_log" {
-  name              = "/${var.service_name}/${var.environment}/server-logs"
+  name              = "/app/${var.environment}/dentalOffice"
   retention_in_days = 7
   tags              = var.additional_tags
+}
+
+data "aws_ssm_parameter" "db_url" {
+  name            = var.db_url_ssm_parameter_name
+  with_decryption = true
+}
+
+resource "random_password" "secret_key_base" {
+  length  = 16
+  special = false
+}
+
+data "template_file" "user_data" {
+  template = file("user_data.sh.tpl")
+
+  vars = {
+    environment     = var.environment
+    log_group_name  = "/app/${var.environment}/dentalOffice"
+    git_repository  = "https://github.com/gabrielsantos-bvc/dental_office.git"
+    cw_config_path  = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+    db_url          = data.aws_ssm_parameter.db_url.value
+    secret_key_base = random_password.secret_key_base.result
+  }
 }
 
 resource "aws_launch_template" "web" {
@@ -20,7 +43,7 @@ resource "aws_launch_template" "web" {
   image_id               = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.admin.key_name
-  user_data              = filebase64("user_data.sh")
+  user_data              = base64encode(data.template_file.user_data.rendered)
   vpc_security_group_ids = [var.security_group_id]
 
   monitoring {
@@ -33,6 +56,8 @@ resource "aws_launch_template" "web" {
       Name = var.service_name
     })
   }
+
+  depends_on = [aws_cloudwatch_log_group.server_log]
 }
 
 
@@ -54,4 +79,24 @@ resource "aws_autoscaling_group" "web" {
     }
     triggers = ["tag"]
   }
+}
+
+data "aws_instance" "web" {
+
+  filter {
+    name   = "tag:Service"
+    values = ["${var.service_name}"]
+  }
+
+  filter {
+    name   = "tag:Environment"
+    values = ["${var.environment}"]
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running", "pending"]
+  }
+
+  depends_on = [aws_autoscaling_group.web]
 }

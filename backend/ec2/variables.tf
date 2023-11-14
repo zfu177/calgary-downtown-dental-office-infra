@@ -10,10 +10,6 @@ variable "public_key" {
   type = string
 }
 
-variable "vpc_id" {
-  type = string
-}
-
 variable "instance_type" {
   type = string
 }
@@ -33,6 +29,10 @@ variable "security_group_id" {
 }
 
 variable "db_url_ssm_parameter_arn" {
+  type = string
+}
+
+variable "db_url_ssm_parameter_name" {
   type = string
 }
 

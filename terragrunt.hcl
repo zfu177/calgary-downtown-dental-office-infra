@@ -1,7 +1,7 @@
 locals {
   aws_region          = "us-east-1"
   env                 = "production"
-  backend_bucket_name = "clcm3102-group-1-terraform-state"
+  backend_bucket_name = "clcm3102-group-1-prod-terraform-state"
   administrator       = "z.fu177@mybvc.ca"
 }
 
@@ -22,6 +22,7 @@ generate "provider" {
   contents  = <<EOF
 provider "aws" {
   region = "${local.aws_region}"
+  profile = "bvc"
 }
 EOF
 }

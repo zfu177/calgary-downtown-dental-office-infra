@@ -24,7 +24,7 @@ variable "additional_tags" {
   type        = map(string)
 }
 
-variable "security_group_id" {
+variable "rds_security_group_id" {
   type = string
 }
 
@@ -41,5 +41,9 @@ variable "instance_profile_name" {
 }
 
 variable "key_name" {
+  type = string
+}
+
+variable "vpc_id" {
   type = string
 }

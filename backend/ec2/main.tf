@@ -37,14 +37,14 @@ data "template_file" "user_data" {
 resource "aws_launch_template" "web" {
   name = var.service_name
   iam_instance_profile {
-    name = try(var.instance_profile_name, aws_iam_instance_profile.ec2_profile[*].name)
+    name = var.instance_profile_name == "" ? aws_iam_instance_profile.ec2_profile[0].name : var.instance_profile_name
   }
 
   image_id               = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.admin.key_name
   user_data              = base64encode(data.template_file.user_data.rendered)
-  vpc_security_group_ids = [var.security_group_id]
+  vpc_security_group_ids = [aws_security_group.ec2.id]
 
   monitoring {
     enabled = true
@@ -72,6 +72,8 @@ resource "aws_autoscaling_group" "web" {
     version = aws_launch_template.web.latest_version
   }
 
+  target_group_arns = [aws_lb_target_group.app_tg.arn]
+
   instance_refresh {
     strategy = "Rolling"
     preferences {
@@ -81,22 +83,3 @@ resource "aws_autoscaling_group" "web" {
   }
 }
 
-data "aws_instance" "web" {
-
-  filter {
-    name   = "tag:Service"
-    values = ["${var.service_name}"]
-  }
-
-  filter {
-    name   = "tag:Environment"
-    values = ["${var.environment}"]
-  }
-
-  filter {
-    name   = "instance-state-name"
-    values = ["running", "pending"]
-  }
-
-  depends_on = [aws_autoscaling_group.web]
-}

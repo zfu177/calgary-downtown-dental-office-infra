@@ -83,22 +83,3 @@ resource "aws_autoscaling_group" "web" {
   }
 }
 
-data "aws_instance" "web" {
-
-  filter {
-    name   = "tag:Service"
-    values = ["${var.service_name}"]
-  }
-
-  filter {
-    name   = "tag:Environment"
-    values = ["${var.environment}"]
-  }
-
-  filter {
-    name   = "instance-state-name"
-    values = ["running", "pending"]
-  }
-
-  depends_on = [aws_autoscaling_group.web]
-}

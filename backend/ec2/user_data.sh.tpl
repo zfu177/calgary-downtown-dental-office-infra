@@ -2,7 +2,9 @@
 yum update && yum upgrade -y
 
 # Install CloudWatch Agent docker, docker compose
-yum install -y git docker amazon-cloudwatch-agent vim
+yum install -y git docker amazon-cloudwatch-agent vim amazon-ssm-agent
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
 usermod -aG docker ec2-user
 systemctl enable docker
 systemctl start docker

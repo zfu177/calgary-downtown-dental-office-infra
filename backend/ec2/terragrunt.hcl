@@ -7,7 +7,7 @@ dependency "rds" {
 }
 
 inputs = {
-  security_group_id = dependency.rds.outputs.ec2_security_group_id
+  rds_security_group_id = dependency.rds.outputs.rds_security_group_id
   db_url_ssm_parameter_arn = dependency.rds.outputs.db_url_ssm_parameter_arn
   db_url_ssm_parameter_name = dependency.rds.outputs.db_url_ssm_parameter_name
   

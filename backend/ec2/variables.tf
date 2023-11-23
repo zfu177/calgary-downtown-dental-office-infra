@@ -24,7 +24,7 @@ variable "additional_tags" {
   type        = map(string)
 }
 
-variable "security_group_id" {
+variable "rds_security_group_id" {
   type = string
 }
 

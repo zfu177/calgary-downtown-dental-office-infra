@@ -10,8 +10,3 @@ data "aws_subnets" "private_subnet" {
     values = ["false"]
   }
 }
-
-# Get my current public IP
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-}

@@ -11,6 +11,15 @@
 ## Before deployment
 Update values in each terragrunt.hcl
 
+Create AWS Profile "bvc" and set your credentials
+
+~/.aws/credentials
+```
+[bvc]
+aws_access_key_id = REPLACE_ME
+aws_secret_access_key =REPLACE_ME
+```
+
 ## Terragrunt Commands
 
 ## 1. Deploy frontend

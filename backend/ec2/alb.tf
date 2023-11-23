@@ -1,6 +1,6 @@
 resource "aws_security_group" "alb_sg" {
-  name        = "alb_sg"
-  description = "Allow inbound traffic on port 80"
+  name        = "${var.service_name}-${var.environment}-alb-sg"
+  description = "${var.service_name} alb security group"
 
   ingress {
     from_port   = 80
@@ -15,6 +15,10 @@ resource "aws_security_group" "alb_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
+  tags = merge(var.additional_tags, {
+    Name = "${var.service_name}-${var.environment}-alb-sg"
+  })
 }
 
 resource "aws_security_group_rule" "allow_http" {
@@ -22,8 +26,7 @@ resource "aws_security_group_rule" "allow_http" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  security_group_id = var.security_group_id
-
+  security_group_id = aws_security_group.ec2.id
   source_security_group_id = aws_security_group.alb_sg.id
 }
 
@@ -32,12 +35,12 @@ resource "aws_security_group_rule" "allow_https" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  security_group_id        = var.security_group_id
+  security_group_id        = aws_security_group.ec2.id
   source_security_group_id = aws_security_group.alb_sg.id
 }
 
 resource "aws_lb" "app_lb" {
-  name               = "app-lb"
+  name               = "${var.service_name}"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
@@ -45,7 +48,7 @@ resource "aws_lb" "app_lb" {
 }
 
 resource "aws_lb_target_group" "app_tg" {
-  name     = "app-tg"
+  name     = "${var.service_name}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id

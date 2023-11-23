@@ -51,3 +51,9 @@ data "aws_subnets" "public" {
     values = ["${each.value}"]
   }
 }
+
+
+# Get my current public IP
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}

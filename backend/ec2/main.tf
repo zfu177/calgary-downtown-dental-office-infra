@@ -44,7 +44,7 @@ resource "aws_launch_template" "web" {
   instance_type          = var.instance_type
   key_name               = aws_key_pair.admin.key_name
   user_data              = base64encode(data.template_file.user_data.rendered)
-  vpc_security_group_ids = [var.security_group_id]
+  vpc_security_group_ids = [aws_security_group.ec2.id]
 
   monitoring {
     enabled = true

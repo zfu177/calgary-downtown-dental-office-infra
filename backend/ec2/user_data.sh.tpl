@@ -89,3 +89,14 @@ runuser -l ec2-user -c 'docker compose -f /home/ec2-user/dental_office/compose.y
 
 systemctl enable dentaloffice
 systemctl start dentaloffice
+
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/instance-id)
+
+aws autoscaling complete-lifecycle-action \
+  --instance-id $INSTANCE_ID \
+  --lifecycle-hook-name "${lifecycle_hook_name}" \
+  --auto-scaling-group-name "${auto_scaling_group_name}" \
+  --lifecycle-action-result CONTINUE
+
+echo "Job is done!"

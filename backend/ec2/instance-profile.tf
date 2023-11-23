@@ -33,6 +33,13 @@ resource "aws_iam_role_policy" "ec2" {
       ],
       "Effect": "Allow",
       "Resource": "${var.db_url_ssm_parameter_arn}"
+    },
+    {
+      "Action": [
+        "autoscaling:CompleteLifecycleAction"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_autoscaling_group.web.arn}"
     }
   ]
 }

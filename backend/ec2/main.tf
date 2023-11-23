@@ -31,6 +31,8 @@ data "template_file" "user_data" {
     cw_config_path  = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
     db_url          = data.aws_ssm_parameter.db_url.value
     secret_key_base = random_password.secret_key_base.result
+    lifecycle_hook_name = "${var.service_name}-lifecycle-hook-ready"
+    auto_scaling_group_name = "${var.service_name}-auto-scaling-group"
   }
 }
 
@@ -62,10 +64,18 @@ resource "aws_launch_template" "web" {
 
 
 resource "aws_autoscaling_group" "web" {
+  name               = "${var.service_name}-auto-scaling-group"
   availability_zones = data.aws_availability_zones.us.names
   desired_capacity   = 1
   max_size           = 2
   min_size           = 1
+  instance_maintenance_policy {
+    min_healthy_percentage = 100
+    max_healthy_percentage = 110
+  }
+
+  termination_policies = ["OldestInstance"]
+
 
   launch_template {
     id      = aws_launch_template.web.id
@@ -83,3 +93,10 @@ resource "aws_autoscaling_group" "web" {
   }
 }
 
+resource "aws_autoscaling_lifecycle_hook" "ready" {
+  name                   = "${var.service_name}-lifecycle-hook-ready"
+  autoscaling_group_name = aws_autoscaling_group.web.name
+  lifecycle_transition   = "autoscaling:EC2_INSTANCE_LAUNCHING"
+  heartbeat_timeout      = 600
+  default_result         = "ABANDON"
+}

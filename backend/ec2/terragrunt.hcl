@@ -11,6 +11,7 @@ inputs = {
   db_url_ssm_parameter_arn = dependency.rds.outputs.db_url_ssm_parameter_arn
   db_url_ssm_parameter_name = dependency.rds.outputs.db_url_ssm_parameter_name
   
+  vpc_id = "vpc-551dcc28"
   instance_type = "t2.micro"
   instance_profile_name = ""
   document_name = "update-code"

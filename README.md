@@ -6,10 +6,15 @@
 
 ## Prerequisite
 * Terraform v1.5.7
-* terragrunt version 0.52.1
+* terragrunt version
+
+```bash
+brew install terraform.
+brew install terragrunt
+```
 
 ## Before deployment
-Update values in each terragrunt.hcl
+Update values in each terragrunt.hcl (Already set up for deployment in bowvalleycollege account)
 
 Create AWS Profile "bvc" and set your credentials
 

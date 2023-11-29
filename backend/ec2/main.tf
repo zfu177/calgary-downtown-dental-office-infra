@@ -5,11 +5,7 @@ resource "aws_key_pair" "admin" {
   tags       = var.additional_tags
 }
 
-resource "aws_cloudwatch_log_group" "server_log" {
-  name              = "/app/${var.environment}/dentalOffice"
-  retention_in_days = 7
-  tags              = var.additional_tags
-}
+
 
 data "aws_ssm_parameter" "db_url" {
   name            = var.db_url_ssm_parameter_name
@@ -25,13 +21,13 @@ data "template_file" "user_data" {
   template = file("user_data.sh.tpl")
 
   vars = {
-    environment     = var.environment
-    log_group_name  = "/app/${var.environment}/dentalOffice"
-    git_repository  = "https://github.com/gabrielsantos-bvc/dental_office.git"
-    cw_config_path  = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
-    db_url          = data.aws_ssm_parameter.db_url.value
-    secret_key_base = random_password.secret_key_base.result
-    lifecycle_hook_name = "${var.service_name}-lifecycle-hook-ready"
+    environment             = var.environment
+    log_group_name          = local.log_group_name
+    git_repository          = "https://github.com/gabrielsantos-bvc/dental_office.git"
+    cw_config_path          = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+    db_url                  = data.aws_ssm_parameter.db_url.value
+    secret_key_base         = random_password.secret_key_base.result
+    lifecycle_hook_name     = "${var.service_name}-lifecycle-hook-ready"
     auto_scaling_group_name = "${var.service_name}-auto-scaling-group"
   }
 }

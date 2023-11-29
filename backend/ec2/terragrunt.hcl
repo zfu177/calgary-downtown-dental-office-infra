@@ -17,4 +17,5 @@ inputs = {
   document_name = "update-code"
   key_name = "admin-key"
   public_key   = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKjHqHuJUEXdgFDE4ivQt3ZA5bHYFfkIcdMlMqYIu8HM z.fu177@mybvc.ca"
+  admin_email = "z.fu177@mybvc.ca"
 }

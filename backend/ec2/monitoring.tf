@@ -48,3 +48,18 @@ resource "aws_cloudwatch_metric_alarm" "error_greater_than_5" {
   alarm_actions             = [aws_sns_topic.error_topic.arn]
   tags                      = var.additional_tags
 }
+
+resource "aws_cloudwatch_metric_alarm" "memory_utilization_greater_than_80" {
+  alarm_name                = "${var.service_name}-memory-greater-than-80"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = 1
+  metric_name               = "MemoryUtilization"
+  namespace                 = local.namespace
+  period                    = 60
+  statistic                 = "Average"
+  threshold                 = 85
+  alarm_description         = "This memory metric monitors for ${var.service_name}"
+  insufficient_data_actions = []
+  alarm_actions             = [aws_sns_topic.error_topic.arn]
+  tags                      = var.additional_tags
+}

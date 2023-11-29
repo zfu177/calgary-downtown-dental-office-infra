@@ -37,8 +37,8 @@ resource "aws_lb_target_group" "app_tg" {
   protocol = "HTTP"
   vpc_id   = var.vpc_id
   health_check {
-    path                = "/"
-    matcher             = "404"
+    path                = "/offices"
+    matcher             = "401"
     port                = "traffic-port"
     protocol            = "HTTP"
     healthy_threshold   = 2

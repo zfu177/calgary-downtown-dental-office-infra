@@ -106,7 +106,7 @@ ExecStop=/usr/bin/docker compose down
 TimeoutStartSec=0
 
 [Install]
-WantedBy=multi-user.target"
+WantedBy=multi-user.target
 EOF
 
 runuser -l ec2-user -c 'docker compose -f /home/ec2-user/dental_office/compose.yaml build'

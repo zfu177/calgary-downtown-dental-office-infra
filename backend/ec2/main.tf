@@ -5,8 +5,6 @@ resource "aws_key_pair" "admin" {
   tags       = var.additional_tags
 }
 
-
-
 data "aws_ssm_parameter" "db_url" {
   name            = var.db_url_ssm_parameter_name
   with_decryption = true
@@ -103,7 +101,6 @@ resource "aws_autoscaling_lifecycle_hook" "ready" {
 resource "aws_autoscaling_policy" "web_scale_out_policy" {
   name                   = "${var.service_name}-scale-out-policy"
   autoscaling_group_name = aws_autoscaling_group.web.name
-  adjustment_type        = "ChangeInCapacity"
   policy_type            = "TargetTrackingScaling"
   target_tracking_configuration {
     customized_metric_specification {

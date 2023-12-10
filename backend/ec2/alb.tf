@@ -29,6 +29,7 @@ resource "aws_lb" "app_lb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = [for k, v in data.aws_subnets.public : v.ids[0]]
+  tags               = var.additional_tags
 }
 
 resource "aws_lb_target_group" "app_tg" {
@@ -44,7 +45,7 @@ resource "aws_lb_target_group" "app_tg" {
     healthy_threshold   = 2
     unhealthy_threshold = 10
     timeout             = 3
-    interval            = 30
+    interval            = 300
   }
 }
 

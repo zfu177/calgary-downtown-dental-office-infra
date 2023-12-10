@@ -9,3 +9,7 @@ output "send_ssm_command" {
 output "alb_dns" {
   value = aws_lb.app_lb.dns_name
 }
+
+output "ssm_run_document_credential" {
+  value = aws_ssm_parameter.user_credentials.name
+}

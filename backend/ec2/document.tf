@@ -24,3 +24,44 @@ DOC
 
   tags = var.additional_tags
 }
+
+resource "aws_iam_user" "ssm_user" {
+  name = "${var.service_name}-run-document"
+  tags = var.additional_tags
+}
+
+resource "aws_iam_access_key" "ssm_user_key" {
+  user = aws_iam_user.ssm_user.name
+}
+
+resource "aws_ssm_parameter" "user_credentials" {
+  name = "/iam/user/ssm_run_document/credentials"
+  type = "SecureString"
+  value = jsonencode({
+    access_key_id     = aws_iam_access_key.ssm_user_key.id
+    secret_access_key = aws_iam_access_key.ssm_user_key.secret
+  })
+  tags = var.additional_tags
+}
+
+resource "aws_iam_policy" "ssm_execute_policy" {
+  name        = "ssm_execute_policy"
+  description = "Allows execution of SSM document"
+  policy      = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ssm:SendCommand",
+      "Resource": "${aws_ssm_document.update_code.arn}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_user_policy_attachment" "ssm_execute_policy_attachment" {
+  user       = aws_iam_user.ssm_user.name
+  policy_arn = aws_iam_policy.ssm_execute_policy.arn
+}

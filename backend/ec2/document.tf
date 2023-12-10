@@ -55,6 +55,32 @@ resource "aws_iam_policy" "ssm_execute_policy" {
       "Effect": "Allow",
       "Action": "ssm:SendCommand",
       "Resource": "${aws_ssm_document.update_code.arn}"
+    },
+    {
+      "Effect":"Allow",
+      "Action":[
+        "ssm:SendCommand"
+      ],
+      "Resource":[
+        "arn:aws:ec2:*:*:instance/*"
+      ],
+      "Condition":{
+        "StringLike":{
+            "ssm:resourceTag/Service":[
+              "${var.service_name}"
+            ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "autoscaling:DescribeAutoScalingGroups",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ssm:GetCommandInvocation",
+      "Resource": "*"
     }
   ]
 }

@@ -13,3 +13,7 @@ output "bucket_name" {
 output "s3_put_credential_name" {
   value = aws_ssm_parameter.user_credentials.name
 }
+
+output "autoscaling_group_name" {
+  value = aws_autoscaling_group.web.name
+}

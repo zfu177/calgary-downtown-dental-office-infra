@@ -22,6 +22,30 @@ cat <<EOF >${cw_config_path}
     "metrics_collection_interval": 30,
     "logfile": "/var/log/amazon-cloudwatch-agent.log"
   },
+  "metrics":{
+      "namespace":"${metrics_namespace}",
+      "append_dimensions":{
+         "AutoScalingGroupName":"${auto_scaling_group_name}",
+         "InstanceId":"{instance_id}"
+      },
+      "aggregation_dimensions":[
+         [
+            "AutoScalingGroupName"
+         ]
+      ],
+      "metrics_collected":{
+         "mem":{
+            "measurement":[
+               {
+                  "name":"mem_used_percent",
+                  "rename":"MemoryUtilization",
+                  "unit":"Percent"
+               }
+            ],
+            "metrics_collection_interval":30
+         }
+      }
+   },
   "logs": {
     "logs_collected": {
       "files": {
@@ -82,7 +106,7 @@ ExecStop=/usr/bin/docker compose down
 TimeoutStartSec=0
 
 [Install]
-WantedBy=multi-user.target"
+WantedBy=multi-user.target
 EOF
 
 runuser -l ec2-user -c 'docker compose -f /home/ec2-user/dental_office/compose.yaml build'

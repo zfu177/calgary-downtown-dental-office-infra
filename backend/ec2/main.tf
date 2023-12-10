@@ -5,11 +5,7 @@ resource "aws_key_pair" "admin" {
   tags       = var.additional_tags
 }
 
-resource "aws_cloudwatch_log_group" "server_log" {
-  name              = "/app/${var.environment}/dentalOffice"
-  retention_in_days = 7
-  tags              = var.additional_tags
-}
+
 
 data "aws_ssm_parameter" "db_url" {
   name            = var.db_url_ssm_parameter_name
@@ -25,13 +21,14 @@ data "template_file" "user_data" {
   template = file("user_data.sh.tpl")
 
   vars = {
-    environment     = var.environment
-    log_group_name  = "/app/${var.environment}/dentalOffice"
-    git_repository  = "https://github.com/gabrielsantos-bvc/dental_office.git"
-    cw_config_path  = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
-    db_url          = data.aws_ssm_parameter.db_url.value
-    secret_key_base = random_password.secret_key_base.result
-    lifecycle_hook_name = "${var.service_name}-lifecycle-hook-ready"
+    environment             = var.environment
+    log_group_name          = local.log_group_name
+    metrics_namespace       = local.namespace
+    git_repository          = "https://github.com/gabrielsantos-bvc/dental_office.git"
+    cw_config_path          = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+    db_url                  = data.aws_ssm_parameter.db_url.value
+    secret_key_base         = random_password.secret_key_base.result
+    lifecycle_hook_name     = "${var.service_name}-lifecycle-hook-ready"
     auto_scaling_group_name = "${var.service_name}-auto-scaling-group"
   }
 }
@@ -64,18 +61,19 @@ resource "aws_launch_template" "web" {
 
 
 resource "aws_autoscaling_group" "web" {
-  name               = "${var.service_name}-auto-scaling-group"
-  availability_zones = data.aws_availability_zones.us.names
-  desired_capacity   = 1
-  max_size           = 2
-  min_size           = 1
+  name                      = "${var.service_name}-auto-scaling-group"
+  availability_zones        = data.aws_availability_zones.us.names
+  desired_capacity          = 1
+  max_size                  = 3
+  min_size                  = 1
+  health_check_grace_period = 60
+  health_check_type         = "ELB"
   instance_maintenance_policy {
     min_healthy_percentage = 100
     max_healthy_percentage = 110
   }
 
   termination_policies = ["OldestInstance"]
-
 
   launch_template {
     id      = aws_launch_template.web.id
@@ -99,4 +97,24 @@ resource "aws_autoscaling_lifecycle_hook" "ready" {
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_LAUNCHING"
   heartbeat_timeout      = 600
   default_result         = "ABANDON"
+}
+
+
+resource "aws_autoscaling_policy" "web_scale_out_policy" {
+  name                   = "${var.service_name}-scale-out-policy"
+  autoscaling_group_name = aws_autoscaling_group.web.name
+  adjustment_type        = "ChangeInCapacity"
+  policy_type            = "TargetTrackingScaling"
+  target_tracking_configuration {
+    customized_metric_specification {
+      metric_dimension {
+        name  = "AutoScalingGroupName"
+        value = aws_autoscaling_group.web.name
+      }
+      metric_name = "MemoryUtilization"
+      namespace   = local.namespace
+      statistic   = "Average"
+    }
+    target_value = 85.0
+  }
 }

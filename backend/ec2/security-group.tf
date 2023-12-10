@@ -14,8 +14,8 @@ resource "aws_security_group_rule" "allow_all_egress" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks      = ["0.0.0.0/0"]
-  ipv6_cidr_blocks = ["::/0"]
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
   security_group_id = aws_security_group.ec2.id
 }
 
@@ -33,16 +33,16 @@ resource "aws_security_group_rule" "allow_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
+  cidr_blocks       = ["${chomp(data.http.myip.response_body)}/32"]
   security_group_id = aws_security_group.ec2.id
 }
 
 resource "aws_security_group_rule" "allow_http" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  security_group_id = aws_security_group.ec2.id
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.ec2.id
   source_security_group_id = aws_security_group.alb_sg.id
 }
 

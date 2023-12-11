@@ -34,10 +34,6 @@ resource "aws_lb" "app_lb" {
     enabled = true
   }
 
-  enable_http2 = false
-
-  desync_mitigation_mode = "monitor"
-
   tags = var.additional_tags
 }
 

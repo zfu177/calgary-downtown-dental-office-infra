@@ -51,3 +51,8 @@ variable "vpc_id" {
 variable "admin_email" {
   type = string
 }
+
+
+variable "public_subnet_ids" {
+  type = list(string)
+}

@@ -63,3 +63,40 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_greater_than_80" {
   alarm_actions             = [aws_sns_topic.error_topic.arn]
   tags                      = var.additional_tags
 }
+
+
+resource "aws_s3_bucket" "alb_logs" {
+  bucket = "${var.service_name}-${var.environment}-alb-logs"
+  tags   = var.additional_tags
+}
+
+resource "aws_s3_bucket_ownership_controls" "alb_logs" {
+  bucket = aws_s3_bucket.alb_logs.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+## Alb logs
+
+data "aws_caller_identity" "current" {}
+data "aws_elb_service_account" "main" {}
+
+# https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html
+resource "aws_s3_bucket_policy" "alb_logs_policy" {
+  bucket = aws_s3_bucket.alb_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_elb_service_account.main.id}:root"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.alb_logs.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+      }
+    ]
+  })
+}

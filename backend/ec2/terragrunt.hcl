@@ -18,4 +18,5 @@ inputs = {
   key_name = "admin-key"
   public_key   = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKjHqHuJUEXdgFDE4ivQt3ZA5bHYFfkIcdMlMqYIu8HM z.fu177@mybvc.ca"
   admin_email = "z.fu177@mybvc.ca"
+  public_subnet_ids = ["subnet-e91246a4", "subnet-5736b008", "subnet-2bd0af25", "subnet-6f6aef09"]
 }

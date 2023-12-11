@@ -37,19 +37,10 @@ resource "aws_security_group_rule" "allow_ssh" {
   security_group_id = aws_security_group.ec2.id
 }
 
-resource "aws_security_group_rule" "allow_http" {
+resource "aws_security_group_rule" "allow_http_from_alb" {
   type                     = "ingress"
   from_port                = 80
   to_port                  = 80
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.ec2.id
-  source_security_group_id = aws_security_group.alb_sg.id
-}
-
-resource "aws_security_group_rule" "allow_https" {
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
   protocol                 = "tcp"
   security_group_id        = aws_security_group.ec2.id
   source_security_group_id = aws_security_group.alb_sg.id

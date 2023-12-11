@@ -31,27 +31,6 @@ data "aws_availability_zones" "us" {
   }
 }
 
-# Get public subnet IDs
-
-data "aws_subnets" "public" {
-  for_each = toset(data.aws_availability_zones.us.zone_ids)
-
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-
-  filter {
-    name   = "map-public-ip-on-launch"
-    values = ["true"]
-  }
-
-  filter {
-    name   = "availability-zone-id"
-    values = ["${each.value}"]
-  }
-}
-
 
 # Get my current public IP
 data "http" "myip" {

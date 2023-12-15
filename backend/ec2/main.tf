@@ -61,9 +61,9 @@ resource "aws_launch_template" "web" {
 resource "aws_autoscaling_group" "web" {
   name                      = "${var.service_name}-auto-scaling-group"
   availability_zones        = data.aws_availability_zones.us.names
-  desired_capacity          = 1
+  desired_capacity          = 0
   max_size                  = 3
-  min_size                  = 1
+  min_size                  = 0
   health_check_grace_period = 60
   health_check_type         = "ELB"
   instance_maintenance_policy {

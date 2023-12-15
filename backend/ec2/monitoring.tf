@@ -49,8 +49,8 @@ resource "aws_cloudwatch_metric_alarm" "error_greater_than_5" {
   tags                      = var.additional_tags
 }
 
-resource "aws_cloudwatch_metric_alarm" "memory_utilization_greater_than_80" {
-  alarm_name                = "${var.service_name}-memory-greater-than-80"
+resource "aws_cloudwatch_metric_alarm" "memory_utilization_greater_than_85" {
+  alarm_name                = "${var.service_name}-memory-greater-than-85"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   metric_name               = "MemoryUtilization"
